@@ -21,6 +21,7 @@ const CHORD_TYPES = {
 const keySelect = document.getElementById('key-select');
 const typeSelect = document.getElementById('type-select');
 const tuningSwitch = document.getElementById('tuning-switch');
+tuningSwitch.checked = false;
 
 NOTES.forEach(note => {
   const opt = document.createElement('option');
@@ -123,7 +124,7 @@ function updateCircle(activeNotes) {
 }
 
 function updateFrequenciesDisplay() {
-  const useEqual = tuningSwitch.checked;
+  const useEqual = !tuningSwitch.checked; // switch logic reversed
   document.querySelectorAll('.note').forEach(div => {
     const note = div.querySelector('.note-name').textContent;
     const freq = noteToFrequency(note, useEqual);
