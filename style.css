@@ -1,0 +1,31 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #fafafa;
+  color: #333;
+}
+
+#note-circle {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 40px auto;
+  border-radius: 50%;
+  border: 2px solid #333;
+}
+
+.note {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 50%;
+  background: #eee;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.note.active {
+  background: #ffcc00;
+  transform: scale(1.2);
+}
