@@ -1,28 +1,48 @@
-// Define the 12 chromatic notes
+// --- Core Data ---
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 
                'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const BASE_FREQ = 261.63; // C4
 
-// Simple chord definitions
-const CHORDS = {
-  Cmaj: ['C', 'E', 'G'],
-  Gmaj: ['G', 'B', 'D'],
-  Amin: ['A', 'C', 'E'],
-  Fmaj7: ['F', 'A', 'C', 'E'],
-  D7: ['D', 'F#', 'A', 'C']
+// Chord formula intervals (in semitones)
+const CHORD_TYPES = {
+  'Major': [0, 4, 7],
+  'Minor': [0, 3, 7],
+  'Diminished': [0, 3, 6],
+  'Augmented': [0, 4, 8],
+  'Major 7th': [0, 4, 7, 11],
+  'Minor 7th': [0, 3, 7, 10],
+  'Dominant 7th': [0, 4, 7, 10],
+  'Sus2': [0, 2, 7],
+  'Sus4': [0, 5, 7]
 };
 
-// Base frequency for C4
-const BASE_FREQ = 261.63;
+// --- Build all chords dynamically ---
+const CHORDS = {};
+for (let root of NOTES) {
+  for (let [name, intervals] of Object.entries(CHORD_TYPES)) {
+    const chordName = `${root} ${name}`;
+    CHORDS[chordName] = intervals.map(i => NOTES[(NOTES.indexOf(root) + i) % 12]);
+  }
+}
 
-// Create the note circle
+// --- Build Dropdown ---
+const chordSelect = document.getElementById('chord-select');
+Object.keys(CHORDS).forEach(chordName => {
+  const opt = document.createElement('option');
+  opt.value = chordName;
+  opt.textContent = chordName;
+  chordSelect.appendChild(opt);
+});
+
+// --- Create Note Circle ---
 const circle = document.getElementById('note-circle');
-const radius = 120;
+const radius = 130;
 
 NOTES.forEach((note, i) => {
-  const angle = (i / NOTES.length) * 2 * Math.PI;
-  const x = 150 + radius * Math.cos(angle) - 20;
-  const y = 150 + radius * Math.sin(angle) - 20;
-  
+  const angle = (i / NOTES.length) * 2 * Math.PI - Math.PI / 2;
+  const x = 160 + radius * Math.cos(angle) - 20;
+  const y = 160 + radius * Math.sin(angle) - 20;
+
   const div = document.createElement('div');
   div.className = 'note';
   div.textContent = note;
@@ -31,13 +51,12 @@ NOTES.forEach((note, i) => {
   circle.appendChild(div);
 });
 
-// Setup dropdown behavior
-const chordSelect = document.getElementById('chord-select');
-chordSelect.addEventListener('change', async () => {
+// --- Chord Change Handler ---
+chordSelect.addEventListener('change', () => {
   const selected = chordSelect.value;
   const chordNotes = CHORDS[selected] || [];
 
-  // Highlight notes on the circle
+  // Highlight the active notes
   document.querySelectorAll('.note').forEach(el => {
     if (chordNotes.includes(el.textContent)) {
       el.classList.add('active');
@@ -46,16 +65,11 @@ chordSelect.addEventListener('change', async () => {
     }
   });
 
-  // Play the chord
-  if (chordNotes.length) {
-    playChord(chordNotes);
-  }
+  if (chordNotes.length) playChord(chordNotes);
 });
 
-
-// --- AUDIO SECTION ---
+// --- Audio Functions ---
 function noteToFrequency(note) {
-  // Get semitone distance from C4
   const noteIndex = NOTES.indexOf(note);
   if (noteIndex === -1) return null;
   return BASE_FREQ * Math.pow(2, noteIndex / 12);
@@ -71,8 +85,7 @@ function playChord(notes) {
 
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-
-    osc.type = 'sine'; // can also try 'triangle', 'square', or 'sawtooth'
+    osc.type = 'triangle';
     osc.frequency.value = freq;
 
     gain.gain.setValueAtTime(0.2, now);
