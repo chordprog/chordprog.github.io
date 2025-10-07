@@ -82,13 +82,15 @@ select {
   height: 24px;
 }
 
-.switch input {display:none;}
+.switch input {
+  display: none;
+}
 
 .slider {
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #888;
+  background-color: #2196F3; /* Equal Temperament = blue */
   border-radius: 24px;
   transition: 0.3s;
 }
@@ -106,7 +108,7 @@ select {
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #888; /* Just Intonation = gray */
 }
 
 input:checked + .slider:before {
@@ -117,7 +119,15 @@ input:checked + .slider:before {
   font-size: 0.9em;
 }
 
-input:checked + .slider:before {
-  transform: translateX(20px);
+/* Note display improvements */
+.note-name {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.note-freq {
+  font-size: 0.75em;
+  opacity: 0.85;
+  margin-top: 2px;
 }
 
