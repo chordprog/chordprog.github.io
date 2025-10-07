@@ -90,7 +90,7 @@ select {
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #2196F3; /* Equal Temperament = blue */
+  background-color: #888;
   border-radius: 24px;
   transition: 0.3s;
 }
@@ -108,7 +108,7 @@ select {
 }
 
 input:checked + .slider {
-  background-color: #888; /* Just Intonation = gray */
+  background-color: #888;
 }
 
 input:checked + .slider:before {
