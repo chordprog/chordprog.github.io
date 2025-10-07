@@ -11,11 +11,17 @@ h1 {
   font-weight: 600;
 }
 
-#chord-select {
+#controls {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  margin-top: 1em;
+}
+
+select {
   font-size: 1rem;
   padding: 0.5em;
   border-radius: 8px;
-  margin-top: 1em;
 }
 
 #note-circle {
