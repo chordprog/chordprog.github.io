@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const DIVISIONS = [12, 19, 24, 31];
 const DEFAULT_DIVISION = 12;
 const BASE_FREQ_C4 = 261.63; // reference frequency for C (step 0)
-const NOTE_RADIUS = 130;
+const NOTE_RADIUS = 280;
 
 // Standard 12-EDO semitone names (used as base)
 const SEMITONE_NAMES_12 = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
