@@ -81,19 +81,53 @@ function updateCircle(activeNotes) {
   });
 }
 
-function noteToFrequency(note) {
-  const noteIndex = NOTES.indexOf(note);
-  if (noteIndex === -1) return null;
-  return BASE_FREQ * Math.pow(2, noteIndex / 12);
+// --- New: Tuning mode toggle ---
+const tuningMode = document.getElementById('tuning-mode');
+const tuningLabel = document.getElementById('tuning-label');
+
+// --- Just Intonation Ratios (relative to root) ---
+const JUST_RATIOS = {
+  'Major':       [1, 5/4, 3/2],
+  'Minor':       [1, 6/5, 3/2],
+  'Diminished':  [1, 6/5, 7/5],
+  'Augmented':   [1, 5/4, 25/16],
+  'Major 7th':   [1, 5/4, 3/2, 15/8],
+  'Minor 7th':   [1, 6/5, 3/2, 9/5],
+  'Dominant 7th':[1, 5/4, 3/2, 7/4],
+  'Sus2':        [1, 9/8, 3/2],
+  'Sus4':        [1, 4/3, 3/2]
+};
+
+// Update label text dynamically
+tuningMode.addEventListener('change', () => {
+  tuningLabel.textContent = tuningMode.checked 
+    ? 'Just Intonation' 
+    : 'Equal Temperament';
+});
+
+// --- Modified noteToFrequency ---
+function noteToFrequency(note, rootNote, chordType, noteIndex) {
+  const rootFreq = BASE_FREQ * Math.pow(2, NOTES.indexOf(rootNote) / 12);
+
+  if (tuningMode.checked && JUST_RATIOS[chordType]) {
+    // Use just intonation ratios if available
+    const ratio = JUST_RATIOS[chordType][noteIndex] || 1;
+    return rootFreq * ratio;
+  } else {
+    // Default: Equal temperament
+    const semitoneDiff = (NOTES.indexOf(note) - NOTES.indexOf(rootNote) + 12) % 12;
+    return rootFreq * Math.pow(2, semitoneDiff / 12);
+  }
 }
 
-function playChord(notes) {
+// --- Modified playChord ---
+function playChord(notes, root, type) {
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') ctx.resume();
   const now = ctx.currentTime;
 
-  notes.forEach(note => {
-    const freq = noteToFrequency(note);
+  notes.forEach((note, i) => {
+    const freq = noteToFrequency(note, root, type, i);
     if (!freq) return;
 
     const osc = ctx.createOscillator();
@@ -110,7 +144,7 @@ function playChord(notes) {
   });
 }
 
-// --- Event Listeners ---
+// --- Update play calls ---
 [keySelect, typeSelect].forEach(sel => {
   sel.addEventListener('change', () => {
     const root = keySelect.value;
@@ -119,16 +153,16 @@ function playChord(notes) {
 
     const chordNotes = getChordNotes(root, type);
     updateCircle(chordNotes);
-    playChord(chordNotes);
+    playChord(chordNotes, root, type);
   });
 });
 
-// --- Play Button ---
 playBtn.addEventListener('click', () => {
   const root = keySelect.value;
   const type = typeSelect.value;
   if (!root || !type) return;
 
   const chordNotes = getChordNotes(root, type);
-  playChord(chordNotes);
+  playChord(chordNotes, root, type);
 });
+
