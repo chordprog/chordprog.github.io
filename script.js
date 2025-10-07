@@ -1,7 +1,7 @@
 // --- Core Data ---
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 
                'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const BASE_FREQ = 261.63; // C4
+const BASE_FREQ = 261.63; // C4 base frequency
 
 // Chord formula intervals (in semitones)
 const CHORD_TYPES = {
@@ -16,22 +16,22 @@ const CHORD_TYPES = {
   'Sus4': [0, 5, 7]
 };
 
-// --- Build all chords dynamically ---
-const CHORDS = {};
-for (let root of NOTES) {
-  for (let [name, intervals] of Object.entries(CHORD_TYPES)) {
-    const chordName = `${root} ${name}`;
-    CHORDS[chordName] = intervals.map(i => NOTES[(NOTES.indexOf(root) + i) % 12]);
-  }
-}
+// --- Populate Dropdowns ---
+const keySelect = document.getElementById('key-select');
+const typeSelect = document.getElementById('type-select');
 
-// --- Build Dropdown ---
-const chordSelect = document.getElementById('chord-select');
-Object.keys(CHORDS).forEach(chordName => {
+NOTES.forEach(note => {
   const opt = document.createElement('option');
-  opt.value = chordName;
-  opt.textContent = chordName;
-  chordSelect.appendChild(opt);
+  opt.value = note;
+  opt.textContent = note;
+  keySelect.appendChild(opt);
+});
+
+Object.keys(CHORD_TYPES).forEach(type => {
+  const opt = document.createElement('option');
+  opt.value = type;
+  opt.textContent = type;
+  typeSelect.appendChild(opt);
 });
 
 // --- Create Note Circle ---
@@ -51,24 +51,33 @@ NOTES.forEach((note, i) => {
   circle.appendChild(div);
 });
 
-// --- Chord Change Handler ---
-chordSelect.addEventListener('change', () => {
-  const selected = chordSelect.value;
-  const chordNotes = CHORDS[selected] || [];
+// --- Event Handler ---
+[keySelect, typeSelect].forEach(sel => {
+  sel.addEventListener('change', () => {
+    const root = keySelect.value;
+    const type = typeSelect.value;
+    if (!root || !type) return;
 
-  // Highlight the active notes
-  document.querySelectorAll('.note').forEach(el => {
-    if (chordNotes.includes(el.textContent)) {
-      el.classList.add('active');
-    } else {
-      el.classList.remove('active');
-    }
+    const chordNotes = getChordNotes(root, type);
+    updateCircle(chordNotes);
+    playChord(chordNotes);
   });
-
-  if (chordNotes.length) playChord(chordNotes);
 });
 
-// --- Audio Functions ---
+// --- Functions ---
+function getChordNotes(root, type) {
+  const intervals = CHORD_TYPES[type];
+  if (!intervals) return [];
+  const rootIndex = NOTES.indexOf(root);
+  return intervals.map(i => NOTES[(rootIndex + i) % 12]);
+}
+
+function updateCircle(activeNotes) {
+  document.querySelectorAll('.note').forEach(el => {
+    el.classList.toggle('active', activeNotes.includes(el.textContent));
+  });
+}
+
 function noteToFrequency(note) {
   const noteIndex = NOTES.indexOf(note);
   if (noteIndex === -1) return null;
