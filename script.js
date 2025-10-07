@@ -16,10 +16,12 @@ const CHORD_TYPES = {
   'Sus4': [0, 5, 7]
 };
 
-// --- Populate Dropdowns ---
+// --- DOM Elements ---
 const keySelect = document.getElementById('key-select');
 const typeSelect = document.getElementById('type-select');
+const playBtn = document.getElementById('play-btn');
 
+// --- Populate Dropdowns ---
 NOTES.forEach(note => {
   const opt = document.createElement('option');
   opt.value = note;
@@ -51,7 +53,7 @@ NOTES.forEach((note, i) => {
   circle.appendChild(div);
 });
 
-// --- Create One Shared AudioContext ---
+// --- Shared AudioContext ---
 let audioCtx;
 function getAudioContext() {
   if (!audioCtx) {
@@ -60,28 +62,12 @@ function getAudioContext() {
   return audioCtx;
 }
 
-// Resume audio context on first user gesture
 window.addEventListener('click', () => {
   const ctx = getAudioContext();
-  if (ctx.state === 'suspended') {
-    ctx.resume();
-  }
+  if (ctx.state === 'suspended') ctx.resume();
 });
 
-// --- Event Handler ---
-[keySelect, typeSelect].forEach(sel => {
-  sel.addEventListener('change', () => {
-    const root = keySelect.value;
-    const type = typeSelect.value;
-    if (!root || !type) return;
-
-    const chordNotes = getChordNotes(root, type);
-    updateCircle(chordNotes);
-    playChord(chordNotes);
-  });
-});
-
-// --- Functions ---
+// --- Helpers ---
 function getChordNotes(root, type) {
   const intervals = CHORD_TYPES[type];
   if (!intervals) return [];
@@ -123,3 +109,26 @@ function playChord(notes) {
     osc.stop(now + 1.5);
   });
 }
+
+// --- Event Listeners ---
+[keySelect, typeSelect].forEach(sel => {
+  sel.addEventListener('change', () => {
+    const root = keySelect.value;
+    const type = typeSelect.value;
+    if (!root || !type) return;
+
+    const chordNotes = getChordNotes(root, type);
+    updateCircle(chordNotes);
+    playChord(chordNotes);
+  });
+});
+
+// --- Play Button ---
+playBtn.addEventListener('click', () => {
+  const root = keySelect.value;
+  const type = typeSelect.value;
+  if (!root || !type) return;
+
+  const chordNotes = getChordNotes(root, type);
+  playChord(chordNotes);
+});
