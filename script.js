@@ -51,6 +51,23 @@ NOTES.forEach((note, i) => {
   circle.appendChild(div);
 });
 
+// --- Create One Shared AudioContext ---
+let audioCtx;
+function getAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioCtx;
+}
+
+// Resume audio context on first user gesture
+window.addEventListener('click', () => {
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') {
+    ctx.resume();
+  }
+});
+
 // --- Event Handler ---
 [keySelect, typeSelect].forEach(sel => {
   sel.addEventListener('change', () => {
@@ -85,7 +102,8 @@ function noteToFrequency(note) {
 }
 
 function playChord(notes) {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const ctx = getAudioContext();
+  if (ctx.state === 'suspended') ctx.resume();
   const now = ctx.currentTime;
 
   notes.forEach(note => {
