@@ -9,6 +9,16 @@
 <body>
   <h1>Chord Visualizer</h1>
 
+  <div class="switch-container">
+    <label class="switch-label">Equal Temperament</label>
+    <label class="switch">
+      <input type="checkbox" id="tuning-switch">
+      <span class="slider"></span>
+    </label>
+    <label class="switch-label">Just Intonation</label>
+  </div>
+
+
   <div id="controls">
     <select id="key-select">
       <option value="" disabled selected>Select Key</option>
@@ -18,17 +28,6 @@
     </select>
     <button id="play-btn">Play Chord</button>
   </div>
-  <div id="tuning-toggle">
-    <span>Equal Temperament</span>
-    <label class="switch">
-      <input type="checkbox" id="tuning-mode">
-      <span class="slider"></span>
-    </label>
-    <span>Just Intonation</span>
-  </div>
-
-
-
   <div id="note-circle"></div>
 
   <script src="script.js"></script>
