@@ -1,36 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chord Visualizer</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Microtonal Chord Visualizer</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Chord Visualizer</h1>
+  <h1>Microtonal Chord Visualizer</h1>
 
-  <div class="switch-container">
-    <label class="switch-label">Equal Temperament</label>
-    <label class="switch">
-      <input type="checkbox" id="tuning-switch">
-      <span class="slider"></span>
-    </label>
-    <label class="switch-label">Just Intonation</label>
+  <div class="controls">
+    <div class="dropdowns">
+      <label for="keySelect">Key:</label>
+      <select id="keySelect"></select>
+
+      <label for="chordTypeSelect">Chord Type:</label>
+      <select id="chordTypeSelect"></select>
+
+      <label for="edoSelect">Octave Division:</label>
+      <select id="edoSelect">
+        <option value="12">12-TET</option>
+        <option value="19">19-TET</option>
+        <option value="24">24-TET</option>
+        <option value="31">31-TET</option>
+      </select>
+    </div>
+
+    <div class="switch-container">
+      <span>Equal Temperament</span>
+      <label class="switch">
+        <input type="checkbox" id="tuningSwitch" />
+        <span class="slider"></span>
+      </label>
+      <span>Just Intonation</span>
+    </div>
+
+    <button id="playChord">Play Chord</button>
   </div>
 
-  <label for="division-select">Divisions of the Octave:</label>
-  <select id="division-select"></select>
-
-  <div id="controls">
-    <select id="key-select">
-      <option value="" disabled selected>Select Key</option>
-    </select>
-    <select id="type-select">
-      <option value="" disabled selected>Select Chord Type</option>
-    </select>
-    <button id="play-btn">Play Chord</button>
-  </div>
-  <div id="note-circle"></div>
+  <div id="circle"></div>
 
   <script src="script.js"></script>
 </body>
