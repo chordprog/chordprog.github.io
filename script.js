@@ -1,8 +1,3 @@
-// script.js
-// Full implementation: microtonal note names, 12/19/24/31 divisions,
-// ET vs JI toggle, chord mapping, frequencies displayed for every note,
-// stable AudioContext, play button, and circle visualization.
-
 // ---------- CONFIG & DATA ----------
 const DIVISIONS = [12, 19, 24, 31];
 const DEFAULT_DIVISION = 12;
