@@ -50,3 +50,19 @@ select {
   transform: scale(1.3);
   box-shadow: 0 0 10px #ffcc00;
 }
+
+#play-btn {
+  margin-left: 10px;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  background-color: #4a90e2;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#play-btn:hover {
+  background-color: #357abd;
+}
