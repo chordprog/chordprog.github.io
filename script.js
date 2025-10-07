@@ -244,7 +244,7 @@ function populateDivisionOptions() {
   DIVISIONS.forEach(d => {
     const opt = document.createElement('option');
     opt.value = d;
-    opt.textContent = `${d}-EDO`;
+    opt.textContent = `${d}`;
     divisionSelect.appendChild(opt);
   });
   divisionSelect.value = currentDivision;
