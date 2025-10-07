@@ -1,9 +1,10 @@
 // --- Core Data ---
-const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 
+const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F',
                'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const BASE_FREQ = 261.63; // C4 base frequency
+const BASE_FREQ = 261.63; // C4 base frequency (Equal Temperament base)
+const BASE_FREQ_JUST = 264; // Approx base for Just Intonation root C4
 
-// Chord formula intervals (in semitones)
+// Chord formulas
 const CHORD_TYPES = {
   'Major': [0, 4, 7],
   'Minor': [0, 3, 7],
@@ -16,12 +17,11 @@ const CHORD_TYPES = {
   'Sus4': [0, 5, 7]
 };
 
-// --- DOM Elements ---
+// --- Populate Dropdowns ---
 const keySelect = document.getElementById('key-select');
 const typeSelect = document.getElementById('type-select');
-const playBtn = document.getElementById('play-btn');
+const tuningSwitch = document.getElementById('tuning-switch');
 
-// --- Populate Dropdowns ---
 NOTES.forEach(note => {
   const opt = document.createElement('option');
   opt.value = note;
@@ -42,18 +42,35 @@ const radius = 130;
 
 NOTES.forEach((note, i) => {
   const angle = (i / NOTES.length) * 2 * Math.PI - Math.PI / 2;
-  const x = 160 + radius * Math.cos(angle) - 20;
-  const y = 160 + radius * Math.sin(angle) - 20;
+  const x = 160 + radius * Math.cos(angle) - 25;
+  const y = 160 + radius * Math.sin(angle) - 25;
 
   const div = document.createElement('div');
   div.className = 'note';
-  div.textContent = note;
+
+  const nameEl = document.createElement('div');
+  nameEl.textContent = note;
+  nameEl.classList.add('note-name');
+
+  const freqEl = document.createElement('div');
+  freqEl.classList.add('note-freq');
+  freqEl.textContent = '';
+
+  div.appendChild(nameEl);
+  div.appendChild(freqEl);
   div.style.left = `${x}px`;
   div.style.top = `${y}px`;
   circle.appendChild(div);
 });
 
-// --- Shared AudioContext ---
+document.querySelectorAll('.note').forEach(div => {
+  div.style.textAlign = 'center';
+  div.style.lineHeight = '1em';
+});
+
+updateFrequenciesDisplay();
+
+// --- Shared Audio Context ---
 let audioCtx;
 function getAudioContext() {
   if (!audioCtx) {
@@ -67,7 +84,31 @@ window.addEventListener('click', () => {
   if (ctx.state === 'suspended') ctx.resume();
 });
 
-// --- Helpers ---
+// --- Tuning Handling ---
+tuningSwitch.addEventListener('change', updateFrequenciesDisplay);
+
+// --- Event Listeners ---
+[keySelect, typeSelect].forEach(sel => {
+  sel.addEventListener('change', () => {
+    const root = keySelect.value;
+    const type = typeSelect.value;
+    if (!root || !type) return;
+
+    const chordNotes = getChordNotes(root, type);
+    updateCircle(chordNotes);
+    playChord(chordNotes);
+  });
+});
+
+document.getElementById('play-btn').addEventListener('click', () => {
+  const root = keySelect.value;
+  const type = typeSelect.value;
+  if (!root || !type) return;
+  const chordNotes = getChordNotes(root, type);
+  playChord(chordNotes);
+});
+
+// --- Functions ---
 function getChordNotes(root, type) {
   const intervals = CHORD_TYPES[type];
   if (!intervals) return [];
@@ -77,57 +118,41 @@ function getChordNotes(root, type) {
 
 function updateCircle(activeNotes) {
   document.querySelectorAll('.note').forEach(el => {
-    el.classList.toggle('active', activeNotes.includes(el.textContent));
+    el.classList.toggle('active', activeNotes.includes(el.querySelector('.note-name').textContent));
   });
 }
 
-// --- New: Tuning mode toggle ---
-const tuningMode = document.getElementById('tuning-mode');
-const tuningLabel = document.getElementById('tuning-label');
+function updateFrequenciesDisplay() {
+  const useEqual = tuningSwitch.checked;
+  document.querySelectorAll('.note').forEach(div => {
+    const note = div.querySelector('.note-name').textContent;
+    const freq = noteToFrequency(note, useEqual);
+    div.querySelector('.note-freq').textContent = `${freq.toFixed(1)} Hz`;
+  });
+}
 
-// --- Just Intonation Ratios (relative to root) ---
-const JUST_RATIOS = {
-  'Major':       [1, 5/4, 3/2],
-  'Minor':       [1, 6/5, 3/2],
-  'Diminished':  [1, 6/5, 7/5],
-  'Augmented':   [1, 5/4, 25/16],
-  'Major 7th':   [1, 5/4, 3/2, 15/8],
-  'Minor 7th':   [1, 6/5, 3/2, 9/5],
-  'Dominant 7th':[1, 5/4, 3/2, 7/4],
-  'Sus2':        [1, 9/8, 3/2],
-  'Sus4':        [1, 4/3, 3/2]
-};
+function noteToFrequency(note, equalTemperament = true) {
+  const noteIndex = NOTES.indexOf(note);
+  if (noteIndex === -1) return null;
 
-// Update label text dynamically
-tuningMode.addEventListener('change', () => {
-  tuningLabel.textContent = tuningMode.checked 
-    ? 'Just Intonation' 
-    : 'Equal Temperament';
-});
-
-// --- Modified noteToFrequency ---
-function noteToFrequency(note, rootNote, chordType, noteIndex) {
-  const rootFreq = BASE_FREQ * Math.pow(2, NOTES.indexOf(rootNote) / 12);
-
-  if (tuningMode.checked && JUST_RATIOS[chordType]) {
-    // Use just intonation ratios if available
-    const ratio = JUST_RATIOS[chordType][noteIndex] || 1;
-    return rootFreq * ratio;
+  if (equalTemperament) {
+    return BASE_FREQ * Math.pow(2, noteIndex / 12);
   } else {
-    // Default: Equal temperament
-    const semitoneDiff = (NOTES.indexOf(note) - NOTES.indexOf(rootNote) + 12) % 12;
-    return rootFreq * Math.pow(2, semitoneDiff / 12);
+    // Just Intonation ratios relative to C
+    const ratios = [1, 16/15, 9/8, 6/5, 5/4, 4/3, 
+                    45/32, 3/2, 8/5, 5/3, 9/5, 15/8];
+    return BASE_FREQ_JUST * ratios[noteIndex];
   }
 }
 
-// --- Modified playChord ---
-function playChord(notes, root, type) {
+function playChord(notes) {
   const ctx = getAudioContext();
   if (ctx.state === 'suspended') ctx.resume();
   const now = ctx.currentTime;
+  const useEqual = tuningSwitch.checked;
 
-  notes.forEach((note, i) => {
-    const freq = noteToFrequency(note, root, type, i);
+  notes.forEach(note => {
+    const freq = noteToFrequency(note, useEqual);
     if (!freq) return;
 
     const osc = ctx.createOscillator();
@@ -143,26 +168,3 @@ function playChord(notes, root, type) {
     osc.stop(now + 1.5);
   });
 }
-
-// --- Update play calls ---
-[keySelect, typeSelect].forEach(sel => {
-  sel.addEventListener('change', () => {
-    const root = keySelect.value;
-    const type = typeSelect.value;
-    if (!root || !type) return;
-
-    const chordNotes = getChordNotes(root, type);
-    updateCircle(chordNotes);
-    playChord(chordNotes, root, type);
-  });
-});
-
-playBtn.addEventListener('click', () => {
-  const root = keySelect.value;
-  const type = typeSelect.value;
-  if (!root || !type) return;
-
-  const chordNotes = getChordNotes(root, type);
-  playChord(chordNotes, root, type);
-});
-
