@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', () => {
 // ---------- CONFIG & DATA ----------
 const DIVISIONS = [12, 19, 24, 31];
 const DEFAULT_DIVISION = 12;
@@ -465,3 +466,5 @@ playBtn.addEventListener('click', () => {
 
 // initialize
 rebuildAllForDivision(DEFAULT_DIVISION);
+
+});
