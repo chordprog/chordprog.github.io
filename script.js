@@ -112,14 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // near 0: natural
         label = SEMITONE_NAMES_12[semitoneIndex];
       } else {
-        const sign = q > 0 ? 'sharp' : 'flat';
+        const sign = q > 0 ? '♯' : '♭';
         const mag = Math.abs(q); // in quarters
         if (Math.abs(mag - 1/2) < 0.001 || Math.abs(mag - 2/4) < 0.001) { // half
-          label = `${SEMITONE_NAMES_12[semitoneIndex]} half-${sign}`;
+          label = `${SEMITONE_NAMES_12[semitoneIndex]} ½-${sign}`;
         } else if (Math.abs(mag - 3/4) < 0.001) {
-          label = `${SEMITONE_NAMES_12[semitoneIndex]} three-quarter-${sign}`;
+          label = `${SEMITONE_NAMES_12[semitoneIndex]} ¾-${sign}`;
         } else if (Math.abs(mag - 1/4) < 0.001) {
-          label = `${SEMITONE_NAMES_12[semitoneIndex]} quarter-${sign}`;
+          label = `${SEMITONE_NAMES_12[semitoneIndex]} ¼-${sign}`;
         } else {
           const cents = frac * 100;
           label = `${SEMITONE_NAMES_12[semitoneIndex]} (${cents.toFixed(1)}c)`;
