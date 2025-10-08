@@ -14,6 +14,7 @@ h1 {
 #controls {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 1em;
   margin-top: 1em;
 }
@@ -24,33 +25,38 @@ select {
   border-radius: 8px;
 }
 
+/* Larger, fixed note circle */
 #note-circle {
   position: relative;
-  width: 320px;
-  height: 320px;
-  margin: 40px auto;
+  width: 700px;   /* increased size */
+  height: 700px;
+  margin: 50px auto;
   border-radius: 50%;
-  border: 2px solid #333;
-  box-shadow: 0 0 10px #ccc;
+  border: 2px dashed #444;   /* faint ring for structure */
+  box-shadow: 0 0 15px #ccc;
+  background: transparent;
 }
 
+/* Each note label */
 .note {
   position: absolute;
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
   text-align: center;
-  border-radius: 50%;
+  transform: translate(-50%, -50%);
   background: #eee;
+  padding: 4px 6px;
+  border-radius: 12px;
   transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  min-width: 40px;
+  white-space: nowrap;
 }
 
 .note.active {
   background: #ffcc00;
-  transform: scale(1.3);
+  transform: scale(1.25);
   box-shadow: 0 0 10px #ffcc00;
 }
 
+/* Play button styling */
 #play-btn {
   margin-left: 10px;
   padding: 6px 12px;
@@ -67,6 +73,7 @@ select {
   background-color: #357abd;
 }
 
+/* Switch container */
 .switch-container {
   display: flex;
   align-items: center;
@@ -119,14 +126,16 @@ input:checked + .slider:before {
   font-size: 0.9em;
 }
 
-/* Note display improvements */
+/* Note name & frequency text */
 .note-name {
-  font-size: 1.1em;
+  font-size: 1.2em;       /* slightly larger */
   font-weight: bold;
+  line-height: 1.2;
 }
 
 .note-freq {
-  font-size: 0.75em;
+  font-size: 0.8em;       /* slightly smaller */
   opacity: 0.85;
+  line-height: 1;
   margin-top: 2px;
 }
