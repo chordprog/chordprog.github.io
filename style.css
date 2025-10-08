@@ -46,7 +46,7 @@ select {
   padding: 4px 6px;
   border-radius: 12px;
   transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-  min-width: 40px;
+  min-width: 5px;
   white-space: nowrap;
 }
 
