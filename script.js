@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const div = document.createElement('div');
       div.className = 'note';
       // set width/height to allow wrapping but keep small to reduce overlap
-      div.style.width = `${Math.max(60, 160 * fontScale)}px`;
+      div.style.width = `${Math.max(60, 80 * fontScale)}px`;
       div.style.pointerEvents = 'auto'; // allow clicking
       div.style.left = `calc(50% + ${x}px)`;
       div.style.top = `calc(50% + ${y}px)`;
