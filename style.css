@@ -43,10 +43,10 @@ select {
   text-align: center;
   transform: translate(-50%, -50%);
   background: #eee;
-  padding: 4px 0px;
+  padding: 4px 6px;
   border-radius: 12px;
   transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-  min-width: 10px;
+  min-width: 40px;
   white-space: nowrap;
 }
 
