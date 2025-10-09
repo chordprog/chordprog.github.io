@@ -94,37 +94,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ctx.state === 'suspended') ctx.resume();
   });
 
-    // ---------- UTIL: microtonal note naming ----------
-  function generateNoteNamesForDivision(N) {
-    const names = [];
-    for (let s = 0; s < N; s++) {
-      const semitonePos = s * (12 / N);
-      const base = Math.floor(semitonePos);
-      const semitoneIndex = ((base % 12) + 12) % 12;
-      let frac = semitonePos - base; // 0..<1
-      if (frac >= 0.5) frac = frac - 1;
+// ---------- UTIL: microtonal note naming (UPDATED) ----------
+function generateNoteNamesForDivision(N) {
+  const names = [];
+  // threshold (in fractional semitone units) to decide "near half"
+  const HALF_THRESHOLD = 0.20; // ±20% of a semitone around 0.5 (adjust if you want stricter)
+  // threshold to decide "near integer semitone"
+  const NATURAL_THRESHOLD = 0.125;
 
-      let label = '';
-      if (Math.abs(frac) < 0.125) {
-        // Close to natural
-        label = SEMITONE_NAMES_12[semitoneIndex];
-      } else if (Math.abs(Math.abs(frac) - 0.5) < 0.125) {
-        // Half-sharp or half-flat
-        if (frac > 0) {
-          label = `${SEMITONE_NAMES_12[semitoneIndex]}𝄲`; // half-sharp
-        } else {
-          label = `${SEMITONE_NAMES_12[semitoneIndex]}𝄳`; // half-flat
-        }
-      } else {
-        // For any other fractional steps, just show cents (fallback)
-        const cents = frac * 100;
-        label = `${SEMITONE_NAMES_12[semitoneIndex]} (${cents.toFixed(1)}c)`;
-      }
+  for (let s = 0; s < N; s++) {
+    const semitonePos = s * (12 / N);        // position in 12-EDO semitone units
+    const base = Math.floor(semitonePos);
+    const semitoneIndex = ((base % 12) + 12) % 12;
+    let frac = semitonePos - base;           // frac in [0, 1)
 
-      names.push(label);
+    let label = '';
+
+    // 1) If very close to the lower integer semitone -> natural of base
+    if (frac < NATURAL_THRESHOLD) {
+      label = SEMITONE_NAMES_12[semitoneIndex];
+
+    // 2) If very close to the upper integer semitone -> label as next semitone natural
+    } else if ((1 - frac) < NATURAL_THRESHOLD) {
+      const nextIndex = (semitoneIndex + 1) % 12;
+      label = SEMITONE_NAMES_12[nextIndex];
+
+    // 3) If near the half-step (e.g. 0.5 ± HALF_THRESHOLD) -> prefer lower-sem note half-sharp (𝄲)
+    } else if (Math.abs(frac - 0.5) <= HALF_THRESHOLD) {
+      // Represent as LOWER semitone + half-sharp (preferred)
+      label = `${SEMITONE_NAMES_12[semitoneIndex]}𝄲`;
+
+    // 4) Otherwise fallback to showing cents offset (rare for chosen EDOs)
+    } else {
+      const cents = frac * 100;
+      label = `${SEMITONE_NAMES_12[semitoneIndex]} (${cents.toFixed(1)}c)`;
     }
-    return names;
+
+    names.push(label);
   }
+  return names;
+}
 
   // ---------- UTIL: frequency calculations ----------
   function computeETFrequencies(N) {
