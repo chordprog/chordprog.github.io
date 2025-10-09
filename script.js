@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ctx.state === 'suspended') ctx.resume();
   });
 
-  // ---------- UTIL: microtonal note naming ----------
+    // ---------- UTIL: microtonal note naming ----------
   function generateNoteNamesForDivision(N) {
     const names = [];
     for (let s = 0; s < N; s++) {
@@ -102,19 +102,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const base = Math.floor(semitonePos);
       const semitoneIndex = ((base % 12) + 12) % 12;
       let frac = semitonePos - base; // 0..<1
-      // normalize to -0.5..+0.5
       if (frac >= 0.5) frac = frac - 1;
-      // Convert frac to quarter steps (0.25)
       const q = Math.round(frac * 4) / 4; // quarter increments
 
       let label = '';
       if (Math.abs(q) < 0.125) {
-        // near 0: natural
         label = SEMITONE_NAMES_12[semitoneIndex];
       } else {
+        // Determine if we should label as sharp or flat
         const sign = q > 0 ? '♯' : '♭';
-        const mag = Math.abs(q); // in quarters
-        if (Math.abs(mag - 1/2) < 0.001 || Math.abs(mag - 2/4) < 0.001) { // half
+        const mag = Math.abs(q);
+
+        // If we're between C and C#, we should say "C half-sharp" not "C half-flat"
+        // So positive quarter steps always use sharp, negative use flat.
+        if (Math.abs(mag - 1/2) < 0.001) { 
           label = `${SEMITONE_NAMES_12[semitoneIndex]} ½${sign}`;
         } else if (Math.abs(mag - 3/4) < 0.001) {
           label = `${SEMITONE_NAMES_12[semitoneIndex]} ¾${sign}`;
