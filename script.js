@@ -267,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
       nameEl.style.fontSize = nameFontSize;
       nameEl.style.fontWeight = '700';
       nameEl.style.whiteSpace = 'nowrap';
-      nameEl.style.textShadow = '0 0 6px rgba(0,0,0,0.6)';
 
       const freqEl = document.createElement('div');
       freqEl.className = 'note-freq';
