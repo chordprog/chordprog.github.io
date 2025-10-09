@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const NOTE_RADIUS = 300;     // <- larger fixed circle radius (keeps circle same size regardless of division)
 
   // Standard 12-EDO semitone names (used as base)
-  const SEMITONE_NAMES_12 = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const SEMITONE_NAMES_12 = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
 
   // 12-EDO chord formulas in semitone intervals (used as base, then mapped to other EDOs)
   const CHORD_TYPES_12 = {
@@ -103,29 +103,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const semitoneIndex = ((base % 12) + 12) % 12;
       let frac = semitonePos - base; // 0..<1
       if (frac >= 0.5) frac = frac - 1;
-      const q = Math.round(frac * 4) / 4; // quarter increments
 
       let label = '';
-      if (Math.abs(q) < 0.125) {
+      if (Math.abs(frac) < 0.125) {
+        // Close to natural
         label = SEMITONE_NAMES_12[semitoneIndex];
-      } else {
-        // Determine if we should label as sharp or flat
-        const sign = q > 0 ? '♯' : '♭';
-        const mag = Math.abs(q);
-
-        // If we're between C and C#, we should say "C half-sharp" not "C half-flat"
-        // So positive quarter steps always use sharp, negative use flat.
-        if (Math.abs(mag - 1/2) < 0.001) { 
-          label = `${SEMITONE_NAMES_12[semitoneIndex]} ½${sign}`;
-        } else if (Math.abs(mag - 3/4) < 0.001) {
-          label = `${SEMITONE_NAMES_12[semitoneIndex]} ¾${sign}`;
-        } else if (Math.abs(mag - 1/4) < 0.001) {
-          label = `${SEMITONE_NAMES_12[semitoneIndex]} ¼${sign}`;
+      } else if (Math.abs(Math.abs(frac) - 0.5) < 0.125) {
+        // Half-sharp or half-flat
+        if (frac > 0) {
+          label = `${SEMITONE_NAMES_12[semitoneIndex]}𝄲`; // half-sharp
         } else {
-          const cents = frac * 100;
-          label = `${SEMITONE_NAMES_12[semitoneIndex]} (${cents.toFixed(1)}c)`;
+          label = `${SEMITONE_NAMES_12[semitoneIndex]}𝄳`; // half-flat
         }
+      } else {
+        // For any other fractional steps, just show cents (fallback)
+        const cents = frac * 100;
+        label = `${SEMITONE_NAMES_12[semitoneIndex]} (${cents.toFixed(1)}c)`;
       }
+
       names.push(label);
     }
     return names;
