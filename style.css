@@ -31,7 +31,8 @@ select {
   justify-content: space-between; /* left + right sides */
   align-items: center;
   min-height: 100vh;
-  padding: 20px;
+  padding-left: 60px;
+  padding-right: 20px;
   box-sizing: border-box;
 }
 
@@ -54,8 +55,8 @@ select {
 /* Larger, fixed note circle */
 #note-circle {
   position: relative;
-  width: 700px;   /* increased size */
-  height: 700px;
+  width: min(70vw, 700px);   /* increased size */
+  height: min(70vw, 700px);
   margin: 50px auto;
   border-radius: 50%;
   border: 2px solid #444;   /* faint ring for structure */
