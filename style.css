@@ -53,7 +53,6 @@ select {
 
 /* Larger, fixed note circle */
 #note-circle {
-  flex: 1;
   position: relative;
   width: 700px;   /* increased size */
   height: 700px;
@@ -62,7 +61,6 @@ select {
   border: 2px solid #444;   /* faint ring for structure */
   box-shadow: 0 0 15px #ccc;
   background: transparent;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
