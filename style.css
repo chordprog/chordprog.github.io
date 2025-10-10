@@ -68,14 +68,19 @@ select {
 /* Each note label */
 .note {
   position: absolute;
-  text-align: center;
-  transform: translate(-50%, -50%);
+  display: inline-flex;             /* allow flexible sizing */
+  flex-direction: column;          /* stack name & freq vertically */
+  align-items: center;             /* center text horizontally */
+  justify-content: center;         /* center text vertically */
   background: #eee;
-  padding: 4px 6px;
-  border-radius: 50%;
+  border-radius: 50%;              /* perfect circle */
+  padding: 10px;                   /* give some breathing room */
   transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-  min-width: 40px;
+  transform: translate(-50%, -50%);
+  text-align: center;
   white-space: nowrap;
+  aspect-ratio: 1 / 1;             /* ✅ keeps width and height equal */
+  min-width: 60px;                 /* ensures a minimum size */
 }
 
 .note.active {
