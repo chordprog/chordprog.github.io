@@ -28,7 +28,7 @@ select {
 /* Layout container */
 #layout-container {
   display: flex;
-  justify-content: space-between; /* left + right sides */
+  justify-content: center; /* left + right sides */
   align-items: center;
   min-height: 100vh;
   padding-left: 20px;
