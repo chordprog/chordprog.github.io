@@ -25,8 +25,35 @@ select {
   border-radius: 8px;
 }
 
+/* Layout container */
+#layout-container {
+  display: flex;
+  justify-content: space-between; /* left + right sides */
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Left panel */
+#settings-panel {
+  flex: 0 0 300px; /* fixed width */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start; /* align text to the left */
+  gap: 12px;
+}
+
+/* Title styling */
+#settings-panel h1 {
+  margin-top: 0;
+  font-size: 1.8em;
+}
+
 /* Larger, fixed note circle */
 #note-circle {
+  flex: 1;
   position: relative;
   width: 700px;   /* increased size */
   height: 700px;
@@ -35,6 +62,9 @@ select {
   border: 2px solid #444;   /* faint ring for structure */
   box-shadow: 0 0 15px #ccc;
   background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Each note label */
