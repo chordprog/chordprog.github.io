@@ -38,11 +38,8 @@ select {
 
 /* Left panel */
 #settings-panel {
-  flex: 0 0 300px; /* fixed width */
-  display: flex;
+  position: relative;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start; /* align text to the left */
   gap: 12px;
   justify-content: center;
   align-items: center;
