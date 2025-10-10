@@ -4,7 +4,7 @@ body {
   background: radial-gradient(circle at center, #ffffff, #fdfdfd);
   color: #111;
   margin: 0;
-  padding: 1em 2em 1em 2em;
+  padding: 0.5em 2em auto 2em;
 }
 
 h1 {
