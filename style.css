@@ -57,7 +57,7 @@ select {
   position: relative;
   width: min(70vw, 700px);   /* increased size */
   height: min(70vw, 700px);
-  margin: 20px auto;
+  margin: 10px auto;
   border-radius: 50%;
   border: 2px solid #444;   /* faint ring for structure */
   box-shadow: 0 0 15px #ccc;
