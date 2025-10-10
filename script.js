@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const N = currentDivision;
     const angleStep = (2 * Math.PI) / N;
     const fontScale = Math.max(0.55, 1.05 - (N - 12) * 0.02);
-    const nameFontSize = `${(fontScale * 1.25).toFixed(2)}em`;
+    const nameFontSize = `${(fontScale * 1.45).toFixed(2)}em`;
     const freqFontSize = `${(fontScale * 0.72).toFixed(2)}em`;
 
     for (let i = 0; i < N; i++) {
